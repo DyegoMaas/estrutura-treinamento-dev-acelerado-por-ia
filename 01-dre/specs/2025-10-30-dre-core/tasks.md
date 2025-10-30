@@ -1,4 +1,4 @@
-[ ] 1. Validar esquema do dre.json
+[x] 1. Validar esquema do dre.json
 - Complexidade: medium
 - Risco: medium
 - Passo 1: Definir esquema strict (campos obrigatórios, tipos, enum de grupos)
@@ -86,4 +86,3 @@
 - Passo 1: Logs estruturados por fase (validate/normalize/recalc)
 - Passo 2: Métricas simples (dur_ms, warnings, errors)
 - _Requirements: RNF-2_
-
