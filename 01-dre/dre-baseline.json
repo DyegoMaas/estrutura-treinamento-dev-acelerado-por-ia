@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "periodo": "2025-01",
+  "moeda": "BRL",
+  "totais": {
+    "receitaBruta": 100000,
+    "deducoes": 10000,
+    "receitaLiquida": 90000,
+    "custoProdutosServicos": 40000,
+    "lucroBruto": 50000,
+    "despesasMarketing": 15000,
+    "despesasGeraisAdm": 10000,
+    "despesasOperacionais": 25000,
+    "resultadoOperacional": 25000,
+    "outrasReceitasDespesas": -2000,
+    "resultadoAntesIR": 23000,
+    "impostoRenda": 4600,
+    "resultadoLiquido": 18400
+  },
+  "porConta": [
+    { "id": "R1", "nome": "Vendas", "grupo": "receita", "valor": 100000 },
+    { "id": "D1", "nome": "Impostos sobre vendas", "grupo": "deducao", "valor": -10000 },
+    { "id": "C1", "nome": "COGS / Custo dos serviços", "grupo": "custo", "valor": -40000 },
+    { "id": "E1", "nome": "Marketing (Ads)", "grupo": "despesa", "valor": -15000 },
+    { "id": "E2", "nome": "Despesas Gerais e Adm", "grupo": "despesa", "valor": -10000 },
+    { "id": "O1", "nome": "Outras receitas/despesas", "grupo": "outras", "valor": -2000 },
+    { "id": "T1", "nome": "Imposto de Renda", "grupo": "imposto", "valor": -4600 }
+  ]
+}
+
