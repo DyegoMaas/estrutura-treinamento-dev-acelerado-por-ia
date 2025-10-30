@@ -9,7 +9,7 @@
   - Dado grupo inválido, retorna 400 com code `invalid_enum`
 - _Requirements: RF-1, RNF-4_
 
-[ ] 2. Normalizar valores monetários e período
+[x] 2. Normalizar valores monetários e período
 - Complexidade: medium
 - Risco: low
 - Passo 1: Converter strings BR/EN ("R$ 10.000,00", "10,000.00") para número
