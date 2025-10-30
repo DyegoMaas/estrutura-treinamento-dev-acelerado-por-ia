@@ -1,48 +1,75 @@
-# Plano de Tarefas — dre-core
+[ ] 1. Definir e versionar o schema do dre-core
+- Complexidade: medium
+- Risco: medium
+- Passo 1: Modelar campos obrigatórios (periodo, totais, porConta[])
+- Passo 2: Definir tipos e restrições (string/enum/number)
+- Passo 3: Documentar paths e mensagens de erro
+- Critérios de Aceite:
+  - Schema validado em exemplos sintéticos e baseline
+  - Paths de erro seguem padrão <root>.<field>[i].<subfield>
+- _Requirements: RF-1, RNF-1_
 
-## Épico
-Implementar módulo `dre-core` para validar, normalizar e recalcular DRE a partir de `dre.json`, retornando `dre_core.json` padronizado com margens, e erros 400 em entradas inválidas.
+[ ] 2. Implementar validação de esquema e coleta de erros
+- Complexidade: medium
+- Risco: medium
+- Passo 1: Validar presença e tipo de campos
+- Passo 2: Acumular violações com path, esperado, obtido
+- Passo 3: Mapear para estrutura de erro 400
+- Critérios de Aceite:
+  - Input inválido retorna 400 com details[] completos
+- _Requirements: RF-1, RF-5_
 
-## Itens (PO-style)
-1) Esqueleto do módulo
-   - Criar pasta `dre-core/` e entry-point (ex.: `index.(ts|js|py)` conforme stack do projeto).
-   - Definir tipos/contratos de entrada e saída.
+[ ] 3. Implementar normalização monetária
+- Complexidade: medium
+- Risco: medium
+- Passo 1: Detectar formato BR/US (símbolo, separadores)
+- Passo 2: Converter para número conforme política
+- Passo 3: Registrar meta de normalizações
+- Critérios de Aceite:
+  - "R$ 1.234,56" → 1234.56; "1,234.56" → 1234.56; "-500" → -500.00
+- _Requirements: RF-2, RNF-1, RNF-5_
 
-2) Validação de esquema
-   - Verificar `schemaVersion`, `periodo (YYYY-MM)`, `moeda (ISO-4217)`, `porConta[]` com `{id,nome,grupo,valor}`.
-   - Implementar coleção de erros com `path` e `expected/got`.
+[ ] 4. Recalcular totais
+- Complexidade: medium
+- Risco: medium
+- Passo 1: Definir fórmulas (decisions.md)
+- Passo 2: Implementar soma por grupos e totais
+- Passo 3: Validar consistência com baseline
+- Critérios de Aceite:
+  - Totais calculados batem com os esperados nos samples
+- _Requirements: RF-3, RNF-1_
 
-3) Normalização de moeda → número
-   - Converter strings de moeda para número decimal preservando sinal.
-   - Padronizar `porConta[].valor` numérico.
+[ ] 5. Calcular margens
+- Complexidade: low
+- Risco: low
+- Passo 1: Definir fórmula principal (decisions.md)
+- Passo 2: Arredondar/padronizar percentual
+- Critérios de Aceite:
+  - Margem = lucroLiquido/receitaLiquida (ou definida) consistente
+- _Requirements: RF-4, RNF-1_
 
-4) Engine de totais
-   - Implementar funções de soma por grupo e fórmulas canônicas.
-   - Arredondamento e tolerância numérica.
+[ ] 6. Montar retorno padronizado (dre_core.json)
+- Complexidade: low
+- Risco: low
+- Passo 1: Incluir periodo, totais, porConta normalizados, margens
+- Passo 2: Incluir meta (schemaVersion, validatedAt, roundingPolicy)
+- Critérios de Aceite:
+  - Estrutura padronizada conforme design
+- _Requirements: RF-6_
 
-5) Cálculo de margens
-   - Calcular margens sobre receita líquida; proteger divisão por zero.
+[ ] 7. Testes com amostras baseline/otimista/pessimista
+- Complexidade: medium
+- Risco: low
+- Passo 1: Definir resultados esperados de totais/margens
+- Passo 2: Validar que baseline passa; criar/ajustar otimista/pessimista
+- Critérios de Aceite:
+  - Três amostras processadas sem divergências
+- _Requirements: RF-7_
 
-6) Construção do `dre_core.json`
-   - Montar estrutura padronizada, incluir `quality.checks` e `warnings`.
-
-7) Tratamento de erros 400
-   - Mapear `ValidationResult` para payload de erro padronizado.
-
-8) Testes com amostras
-   - Baseline: `dre-baseline.json` (existente no repositório).
-   - Otimista/Pessimista: criar `dre-otimista.json`, `dre-pessimista.json` cobrindo strings de moeda e sinais.
-   - Casos negativos: `periodo` inválido, `moeda` inválida, `grupo` fora da lista, item incompleto.
-
-9) (Opcional) CLI utilitária
-   - Script `agent-scripts/dre-core-validate.sh` para processar um arquivo e imprimir saída/erros.
-
-## Entregáveis
-- Código do módulo `dre-core` + testes de unidade.
-- Três amostras válidas (baseline/otimista/pessimista) + casos inválidos.
-- Scripts auxiliares (opcional) no diretório `agent-scripts/`.
-
-## Aceite
-- Todos os Quality Gates em `decisions.md` atendidos.
-- Testes passando para as três amostras e cenários negativos.
+[ ] 8. Observabilidade mínima
+- Complexidade: low
+- Risco: low
+- Passo 1: Contadores de erros e normalizações
+- Passo 2: Logs de paths inválidos
+- _Requirements: RNF-3_
 

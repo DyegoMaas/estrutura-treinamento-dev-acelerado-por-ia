@@ -1,99 +1,33 @@
-# Requisitos — dre-core (EARS)
+# Requisitos (EARS) — dre-core
 
-Contexto: O módulo `dre-core` recebe um `dre.json` produzido pelo simulador com estrutura básica `{ periodo, moeda, totais, porConta[] }`. O objetivo é validar, normalizar, recalcular totais/margens e retornar um `dre_core.json` padronizado. Em caso de entrada inválida, responder com erro claro (HTTP 400).
+## 1. Contexto
+- Objetivo de negócio: Receber um `dre.json` do simulador (estrutura { periodo, totais, porConta[] }), validar e normalizar valores monetários, recalcular totais e margem, retornar um `dre_core.json` padronizado (com números e métricas coerentes), e reportar erros claros (HTTP 400) em caso de entrada inválida.
+- Atores e stakeholders: Time de Produto/Finanças (consumidores do resultado), Time de Plataforma/API (integração), QA (validação com amostras baseline/otimista/pessimista).
+- Restrições e políticas: Precisão monetária com regras de arredondamento consistentes; transparência de erros; compatibilidade com amostras; rastreabilidade de versões do esquema.
 
-## Léxico e Convenções
-- Periodicidade: `periodo` no formato `YYYY-MM` (ex.: `2025-01`).
-- Moeda: `moeda` é código ISO-4217 (ex.: `BRL`).
-- Valores monetários: aceitos como número (ponto decimal) ou string de moeda; strings serão normalizadas para número decimal (ex.: `"R$ 10.000,50" -> 10000.50`).
-- Sinal de valores: receitas positivas; deduções, custos, despesas, impostos podem ser negativos no item, mas totais serão calculados por fórmulas explícitas.
+## 2. Requisitos Funcionais (EARS)
+- RF-1 — Validação de esquema: Quando o módulo receber um `dre.json`, então o sistema deve validar a presença e tipos de `periodo`, `totais`, e `porConta[]`, incluindo campos mínimos de cada item em `porConta` (ver suposições em decisions.md) e retornar 400 com lista de violações quando inválido.
+- RF-2 — Normalização monetária: Quando o `dre.json` contiver valores monetários em formato de moeda (ex.: "R$ 1.234,56", "1.234,56", "1234.56"), então o sistema deve normalizá-los para número (ver política em decisions.md) preservando sinal e magnitude, e registrar a origem de formatação (ex.: BR/US) quando inferida.
+- RF-3 — Recalcular totais: Quando valores por conta forem válidos e normalizados, então o sistema deve recalcular os campos em `totais` (ver fórmulas definidas) e substituir/confirmar os valores informados, garantindo consistência.
+- RF-4 — Calcular margem: Quando houver `receitaLiquida` e `lucroLiquido`/`lucroBruto` conforme fórmula definida, então o sistema deve calcular `margem` (percentual) e expor no retorno padronizado com a política de arredondamento definida.
+- RF-5 — Erros claros: Quando houver entradas inválidas, então o sistema deve retornar 400 com estrutura de erro padronizada contendo: `code`, `message`, `details[]` (path JSON, erro, esperado/obtido) e `hint` (curto), para facilitar correção.
+- RF-6 — Retorno padronizado: Quando a validação e o recálculo concluírem, então o sistema deve retornar `dre_core.json` padronizado contendo: `periodo`, `totais` recalculados, `porConta` normalizados, `margem`(ns), `meta` (versão do schema, data de validação, políticas de arredondamento aplicadas).
+- RF-7 — Testes com amostras: Quando executado contra três amostras (baseline/otimista/pessimista), então o sistema deve validar que não há erros (para entradas válidas) e que totais e margem batem com os resultados esperados documentados.
 
-## Entradas (EARS)
-- Quando o sistema receber um JSON com `schemaVersion`, `periodo`, `moeda`, `totais`, `porConta[]`, então deve validar presença e tipos obrigatórios.
-- Quando `periodo` não estiver no formato `YYYY-MM`, então deve rejeitar com erro 400 e detalhe do campo.
-- Quando `moeda` não for um código ISO-4217 suportado, então deve rejeitar com erro 400.
-- Quando `porConta[]` contiver itens sem `{ id, nome, grupo, valor }`, então deve rejeitar com erro 400 listando os itens inválidos.
-- Quando `valor` vier como string de moeda, então deve normalizar para número decimal, respeitando separadores locais.
-- Quando `grupo` não pertencer ao conjunto permitido, então deve rejeitar com erro 400.
+## 3. Requisitos Não‑Funcionais
+- RNF-1 — Precisão: Cálculo monetário deve usar representação que evite erro binário (ex.: decimal/configuração equivalente). Arredondamento conforme política (ver decisions.md).
+- RNF-2 — Performance: Processar arquivo com até 5k contas em < 200ms em ambiente padrão (indicativo, revisável).
+- RNF-3 — Observabilidade: Registrar logs estruturados de validação (contagem de erros, paths afetados) e contadores de normalizações aplicadas.
+- RNF-4 — Confiabilidade: Regras determinísticas; mesma entrada → mesmo resultado.
+- RNF-5 — Compatibilidade: Aceitar variações comuns de moeda (símbolo, separadores `.`/`,`), conforme política definida.
 
-Grupos permitidos:
-- `receita` (receitas brutas)
-- `deducao` (impostos/descontos sobre vendas)
-- `custo` (COGS/serviços)
-- `despesa` (OPEX: marketing, G&A etc.)
-- `outras` (outras receitas/despesas operacionais)
-- `imposto` (IR/CSLL ou equivalente)
+## 4. Critérios de Aceite (alto nível)
+- DADO um `dre.json` válido (baseline), QUANDO processado, ENTÃO retorna 200 com `dre_core.json` onde totais e margens são coerentes com as fórmulas, e todos os valores monetários estão numéricos.
+- DADO um `dre.json` com campo obrigatório ausente, QUANDO processado, ENTÃO retorna 400 com `details[]` apontando `path` e `motivo` claros.
+- DADO um `dre.json` com valores monetários "R$ 1.234,56", QUANDO processado, ENTÃO os valores numéricos resultantes equivalem a 1234.56 segundo a política definida.
+- DADO três amostras baseline/otimista/pessimista, QUANDO processadas, ENTÃO os totais e margens recalculados batem com os esperados do anexo de teste.
 
-## Processamento
-- Quando o JSON for válido, então o sistema deve:
-  - Normalizar todos os valores monetários para número (`number`, precisão dupla), padronizando duas casas em exibição.
-  - Recalcular totais a partir de `porConta[]` por fórmulas canônicas:
-    - `receitaBruta` = soma(grupo=`receita`).
-    - `deducoes` = soma(abs(valor) para grupo=`deducao`) com sinal positivo na composição; no item, o valor pode vir negativo.
-    - `receitaLiquida` = `receitaBruta` - `deducoes`.
-    - `custoProdutosServicos` = soma(abs(valor) para grupo=`custo`).
-    - `lucroBruto` = `receitaLiquida` - `custoProdutosServicos`.
-    - `despesasOperacionais` = soma(abs(valor) para grupo=`despesa`).
-    - `resultadoOperacional` = `lucroBruto` - `despesasOperacionais`.
-    - `outrasReceitasDespesas` = soma(valor para grupo=`outras`) [pode ser positivo ou negativo].
-    - `resultadoAntesIR` = `resultadoOperacional` + `outrasReceitasDespesas`.
-    - `impostoRenda` = soma(abs(valor) para grupo=`imposto`).
-    - `resultadoLiquido` = `resultadoAntesIR` - `impostoRenda`.
-  - Calcular margens (% sobre receita líquida; se `receitaLiquida == 0`, margens = 0):
-    - `margemBruta` = `lucroBruto` / `receitaLiquida`.
-    - `margemOperacional` = `resultadoOperacional` / `receitaLiquida`.
-    - `margemLiquida` = `resultadoLiquido` / `receitaLiquida`.
-  - Arredondamento: valores monetários e margens arredondados a 2 casas decimais, sem acumular erros (round half away from zero).
-
-## Saída (dre_core.json)
-Estrutura padronizada:
-```
-{
-  "schemaVersion": 1,
-  "periodo": "YYYY-MM",
-  "moeda": "BRL",
-  "totais": {
-    "receitaBruta": number,
-    "deducoes": number,
-    "receitaLiquida": number,
-    "custoProdutosServicos": number,
-    "lucroBruto": number,
-    "despesasOperacionais": number,
-    "resultadoOperacional": number,
-    "outrasReceitasDespesas": number,
-    "resultadoAntesIR": number,
-    "impostoRenda": number,
-    "resultadoLiquido": number
-  },
-  "margens": {
-    "margemBruta": number,
-    "margemOperacional": number,
-    "margemLiquida": number
-  },
-  "porConta": [ { id, nome, grupo, valor: number } ],
-  "quality": {
-    "warnings": string[],
-    "checks": { "schemaValidated": boolean, "totaisRecalculados": boolean }
-  }
-}
-```
-
-## Erros (HTTP 400)
-Formato padronizado:
-```
-{
-  "error": {
-    "code": "VALIDATION_ERROR",
-    "message": "Entrada inválida",
-    "details": [ { "path": "totais.receitaBruta", "expected": "number", "got": "string" } ]
-  }
-}
-```
-
-## Critérios de Aceite
-- Dado `dre-baseline.json`, quando processado, então os totais e margens recalculados devem corresponder às fórmulas e ao sinal definido.
-- Dadas amostras otimista e pessimista, quando processadas, então a normalização de moeda em string produz valores numéricos corretos e coerentes.
-- Dado JSON com campo faltante (`periodo`, `moeda`, `porConta`), então retorna 400 com `details` apontando o `path` exato.
-- Dado `moeda` inválida (ex.: `BR$`), então retorna 400.
-- Dado `grupo` fora do permitido, então retorna 400 listando os índices afetados.
+## 5. Priorização e Rastreabilidade
+- IDs: RF-1..RF-7, RNF-1..RNF-5
+- Mapa → `tasks.md` (_Requirements: IDs_)
 
