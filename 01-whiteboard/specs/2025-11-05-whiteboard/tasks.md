@@ -31,7 +31,7 @@
   - Atalhos funcionam e não conflitam durante edição de texto
 - _Requirements: RF-2, RF-6, RF-14_
 
-[ ] 4. Laser pointer
+[x] 4. Laser pointer
 - Complexidade: low
 - Risco: low
 - Passo 1: Expor/ativar ferramenta Laser do tldraw

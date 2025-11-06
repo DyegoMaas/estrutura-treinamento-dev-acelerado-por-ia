@@ -143,8 +143,8 @@ const overrides: TLUiOverrides = {
     // Copy arrow tool structure as reference for Card tool
     const arrowTool = tools.arrow
     
-    // Filter to show only Select, Draw, Arrow, and Card (RF-6)
-    const allowedTools = ['select', 'draw', 'arrow', 'card']
+    // Filter to show only Select, Draw, Arrow, Card, and Laser (RF-6, RF-8)
+    const allowedTools = ['select', 'draw', 'arrow', 'card', 'laser']
     
     // Delete tools that are not allowed
     const toolIds = Object.keys(tools)
