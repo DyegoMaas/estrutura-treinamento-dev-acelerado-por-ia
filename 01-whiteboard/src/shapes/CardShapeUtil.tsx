@@ -6,6 +6,7 @@ import {
   useEditor,
   type SvgExportContext,
 } from '@tldraw/tldraw'
+import React from 'react'
 import type { CardShape } from '../types/card'
 
 export class CardShapeUtil extends ShapeUtil<CardShape> {
@@ -88,6 +89,18 @@ function CardComponent({ shape }: { shape: CardShape; util: CardShapeUtil }) {
   const editor = useEditor()
   const { w, h, title, label, fill, stroke } = shape.props
   const theme = getDefaultColorTheme({ isDarkMode: false })
+  const isEditing = editor.getEditingShapeId() === shape.id
+
+  const titleInputRef = React.useRef<HTMLInputElement>(null)
+  const labelInputRef = React.useRef<HTMLInputElement>(null)
+
+  // Auto-focus title input when entering edit mode
+  React.useEffect(() => {
+    if (isEditing && titleInputRef.current) {
+      titleInputRef.current.focus()
+      titleInputRef.current.select()
+    }
+  }, [isEditing])
 
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     editor.updateShapes([
@@ -109,8 +122,50 @@ function CardComponent({ shape }: { shape: CardShape; util: CardShapeUtil }) {
     ])
   }
 
+  const handleDoubleClick = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    editor.setEditingShape(shape.id)
+  }
+
+  const handlePointerDown = (e: React.PointerEvent) => {
+    // Always stop propagation to prevent tldraw from interfering
+    e.stopPropagation()
+  }
+
+  // Handle Enter key when shape is selected but not editing
+  React.useEffect(() => {
+    if (!isEditing) {
+      const handleKeyDown = (e: KeyboardEvent) => {
+        const selectedShapes = editor.getSelectedShapes()
+        if (
+          selectedShapes.length === 1 &&
+          selectedShapes[0].id === shape.id &&
+          e.key === 'Enter' &&
+          !isInputFocused()
+        ) {
+          e.preventDefault()
+          editor.setEditingShape(shape.id)
+        }
+      }
+      window.addEventListener('keydown', handleKeyDown)
+      return () => window.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [editor, shape.id, isEditing])
+
+  // Helper to check if input is focused
+  function isInputFocused(): boolean {
+    const activeElement = document.activeElement
+    if (!activeElement) return false
+    const tagName = activeElement.tagName.toLowerCase()
+    return tagName === 'input' || tagName === 'textarea'
+  }
+
   return (
-    <HTMLContainer>
+    <HTMLContainer
+      style={{
+        pointerEvents: 'all',
+      }}
+    >
       <div
         style={{
           width: w,
@@ -123,9 +178,13 @@ function CardComponent({ shape }: { shape: CardShape; util: CardShapeUtil }) {
           flexDirection: 'column',
           justifyContent: 'space-between',
           boxSizing: 'border-box',
+          cursor: isEditing ? 'text' : 'default',
         }}
+        onDoubleClick={handleDoubleClick}
+        onPointerDown={handlePointerDown}
       >
         <input
+          ref={titleInputRef}
           data-card-title
           type="text"
           value={title}
@@ -139,13 +198,38 @@ function CardComponent({ shape }: { shape: CardShape; util: CardShapeUtil }) {
             outline: 'none',
             width: '100%',
             color: theme.text,
+            cursor: isEditing ? 'text' : 'pointer',
+            pointerEvents: 'auto',
+          }}
+          onClick={(e) => {
+            e.stopPropagation()
+            if (!isEditing) {
+              editor.setEditingShape(shape.id)
+            }
           }}
           onKeyDown={(e) => {
-            // Prevent hotkeys from interfering when editing
             e.stopPropagation()
+            if (e.key === 'Escape') {
+              editor.setEditingShape(null)
+            } else if (e.key === 'Enter' && e.shiftKey === false) {
+              e.preventDefault()
+              labelInputRef.current?.focus()
+            }
+          }}
+          onBlur={(e) => {
+            // Only exit edit mode if clicking outside the card
+            if (!e.currentTarget.contains(e.relatedTarget as Node)) {
+              // Check if the blur is not to the label input
+              setTimeout(() => {
+                if (document.activeElement !== labelInputRef.current) {
+                  editor.setEditingShape(null)
+                }
+              }, 0)
+            }
           }}
         />
         <input
+          ref={labelInputRef}
           data-card-label
           type="text"
           value={label}
@@ -159,14 +243,36 @@ function CardComponent({ shape }: { shape: CardShape; util: CardShapeUtil }) {
             width: '100%',
             color: theme.text,
             marginTop: 'auto',
+            cursor: isEditing ? 'text' : 'pointer',
+            pointerEvents: 'auto',
+          }}
+          onClick={(e) => {
+            e.stopPropagation()
+            if (!isEditing) {
+              editor.setEditingShape(shape.id)
+            }
           }}
           onKeyDown={(e) => {
-            // Prevent hotkeys from interfering when editing
             e.stopPropagation()
+            if (e.key === 'Escape') {
+              editor.setEditingShape(null)
+            } else if (e.key === 'Enter' && e.shiftKey === false) {
+              e.preventDefault()
+              editor.setEditingShape(null)
+            }
+          }}
+          onBlur={(e) => {
+            // Only exit edit mode if clicking outside the card
+            if (!e.currentTarget.contains(e.relatedTarget as Node)) {
+              setTimeout(() => {
+                if (document.activeElement !== titleInputRef.current) {
+                  editor.setEditingShape(null)
+                }
+              }, 0)
+            }
           }}
         />
       </div>
     </HTMLContainer>
   )
 }
-
