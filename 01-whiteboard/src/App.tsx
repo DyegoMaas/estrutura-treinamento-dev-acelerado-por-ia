@@ -3,6 +3,9 @@ import '@tldraw/tldraw/tldraw.css'
 import { useEffect } from 'react'
 import { CardShapeUtil } from './shapes/CardShapeUtil'
 import { CardTool } from './tools/CardTool'
+import { Minimap } from './components/Minimap'
+import { MinimapToggle } from './components/MinimapToggle'
+import { useMinimapState } from './components/useMinimapState'
 
 // Helper function to check if an input/textarea is focused (RF-14)
 function isInputFocused(): boolean {
@@ -122,6 +125,18 @@ function CardToolbarInjection() {
   return null
 }
 
+// Component to render Minimap and Toggle
+function MinimapContainer() {
+  const [visible] = useMinimapState()
+  
+  return (
+    <>
+      <MinimapToggle />
+      <Minimap visible={visible} />
+    </>
+  )
+}
+
 function App() {
   return (
     <div style={{ position: 'fixed', inset: 0 }}>
@@ -133,6 +148,7 @@ function App() {
       >
         <KeyboardShortcuts />
         <CardToolbarInjection />
+        <MinimapContainer />
       </Tldraw>
     </div>
   )

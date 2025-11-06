@@ -40,7 +40,7 @@
   - Laser aparece como rastro temporário
 - _Requirements: RF-8_
 
-[ ] 5. Minimap
+[x] 5. Minimap
 - Complexidade: medium
 - Risco: medium
 - Passo 1: Adicionar toggle no UI para mostrar/ocultar minimap
