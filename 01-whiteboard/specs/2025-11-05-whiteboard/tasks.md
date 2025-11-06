@@ -51,7 +51,7 @@
   - Sem travamentos ao pan/zoom
 - _Requirements: RF-7, RNF-Observabilidade_
 
-[ ] 6. Modal de Exportar (simulado)
+[x] 6. Modal de Exportar (simulado)
 - Complexidade: low
 - Risco: low
 - Passo 1: Implementar modal com opções SVG/PNG/JSON

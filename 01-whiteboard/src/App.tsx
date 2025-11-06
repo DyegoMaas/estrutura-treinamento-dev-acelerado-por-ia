@@ -6,6 +6,7 @@ import { CardTool } from './tools/CardTool'
 import { Minimap } from './components/Minimap'
 import { MinimapToggle } from './components/MinimapToggle'
 import { useMinimapState } from './components/useMinimapState'
+import { ExportToggle } from './components/ExportToggle'
 
 // Helper function to check if an input/textarea is focused (RF-14)
 function isInputFocused(): boolean {
@@ -149,6 +150,7 @@ function App() {
         <KeyboardShortcuts />
         <CardToolbarInjection />
         <MinimapContainer />
+        <ExportToggle />
       </Tldraw>
     </div>
   )
