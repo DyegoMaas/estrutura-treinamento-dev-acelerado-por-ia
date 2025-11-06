@@ -7,7 +7,6 @@ import { Minimap } from './components/Minimap'
 import { MinimapToggle } from './components/MinimapToggle'
 import { useMinimapState } from './components/useMinimapState'
 import { ExportToggle } from './components/ExportToggle'
-import { ThemeToggle } from './components/ThemeToggle'
 import { useThemeState } from './components/useThemeState'
 
 // Helper function to check if an input/textarea is focused (RF-14)
@@ -140,6 +139,111 @@ function MinimapContainer() {
   )
 }
 
+// Component to inject Theme toggle into style panel
+function ThemeStylePanelInjection() {
+  const editor = useEditor()
+  const [theme, { toggleTheme }] = useThemeState()
+
+  useEffect(() => {
+    if (!editor) return
+
+    // Update tldraw editor theme when our theme changes
+    editor.user.updateUserPreferences({
+      colorScheme: theme,
+    })
+
+    let themeButton: HTMLElement | null = null
+
+    const injectThemeButton = () => {
+      // Find the style panel - try multiple selectors
+      const stylePanel = document.querySelector('[aria-label="Painel de estilo"]') || 
+                         document.querySelector('[aria-label="Style panel"]') ||
+                         document.querySelector('[data-testid="style-panel"]') ||
+                         document.querySelector('.tlui-style-panel')
+      
+      if (!stylePanel) return false
+
+      // Check if theme button already exists
+      const existingButton = stylePanel.querySelector('[data-testid="theme-style-panel-item"]') as HTMLElement
+      if (existingButton) {
+        // Update existing button text
+        const textSpan = existingButton.querySelector('span:first-child')
+        if (textSpan) {
+          textSpan.textContent = theme === 'light' ? '☀️ Claro' : '🌙 Escuro'
+        }
+        themeButton = existingButton
+        return true
+      }
+
+      // Create theme toggle button
+      themeButton = document.createElement('div')
+      themeButton.setAttribute('data-testid', 'theme-style-panel-item')
+      themeButton.setAttribute('role', 'button')
+      themeButton.setAttribute('tabindex', '0')
+      themeButton.setAttribute('aria-label', theme === 'light' ? 'Ativar tema escuro' : 'Ativar tema claro')
+      themeButton.style.cssText = `
+        padding: 8px 12px;
+        border-bottom: 1px solid var(--color-line, #e5e5e5);
+        cursor: pointer;
+        user-select: none;
+      `
+      
+      themeButton.innerHTML = `
+        <div style="display: flex; align-items: center; justify-content: space-between; font-size: var(--font-size-0, 12px); font-weight: 500; color: var(--color-text, #333);">
+          <span>${theme === 'light' ? '☀️ Claro' : '🌙 Escuro'}</span>
+          <span style="font-size: 12px; opacity: 0.6;">Tema</span>
+        </div>
+      `
+
+      themeButton.onclick = () => {
+        toggleTheme()
+      }
+
+      themeButton.onkeydown = (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault()
+          toggleTheme()
+        }
+      }
+
+      // Insert at the top of style panel
+      const firstChild = stylePanel.firstChild
+      if (firstChild) {
+        stylePanel.insertBefore(themeButton, firstChild)
+      } else {
+        stylePanel.appendChild(themeButton)
+      }
+
+      return true
+    }
+
+    // Try to inject immediately
+    if (!injectThemeButton()) {
+      // If panel not found, try periodically (similar to CardToolbarInjection)
+      const interval = setInterval(() => {
+        if (injectThemeButton()) {
+          clearInterval(interval)
+        }
+      }, 100)
+
+      return () => {
+        clearInterval(interval)
+        if (themeButton) {
+          themeButton.remove()
+        }
+      }
+    }
+
+    return () => {
+      if (themeButton) {
+        themeButton.remove()
+      }
+    }
+  }, [editor, theme, toggleTheme])
+
+  return null
+}
+
 function App() {
   // Initialize theme state to apply theme on mount
   useThemeState()
@@ -156,7 +260,7 @@ function App() {
         <CardToolbarInjection />
         <MinimapContainer />
         <ExportToggle />
-        <ThemeToggle />
+        <ThemeStylePanelInjection />
       </Tldraw>
     </div>
   )

@@ -17,7 +17,7 @@ export function ExportToggle() {
         data-testid="export-toggle"
         style={{
           position: 'absolute',
-          top: 16,
+          top: 50,
           left: 16,
           padding: '8px 12px',
           border: '1px solid #999',
