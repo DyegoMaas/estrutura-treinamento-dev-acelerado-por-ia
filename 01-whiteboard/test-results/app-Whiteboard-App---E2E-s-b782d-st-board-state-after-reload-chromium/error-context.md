@@ -1,0 +1,121 @@
+# Page snapshot
+
+```yaml
+- application "tldraw" [ref=e4]:
+  - generic [ref=e5]:
+    - img
+  - generic:
+    - button "Move focus to canvas" [ref=e9] [cursor=pointer]
+    - generic:
+      - generic:
+        - navigation:
+          - generic:
+            - button "Menu" [ref=e10] [cursor=pointer]:
+              - img [ref=e11]
+            - button "Page 1" [ref=e12] [cursor=pointer]:
+              - generic [ref=e13]: Page 1
+              - img [ref=e14]
+            - toolbar "Actions":
+              - button "Undo — Ctrl + Z" [disabled] [ref=e15]:
+                - img [ref=e16]
+              - button "Redo — Ctrl + ⇧ + Z" [disabled] [ref=e17]:
+                - img [ref=e18]
+              - button "Delete — ⌫" [disabled] [ref=e19]:
+                - img [ref=e20]
+              - button "Duplicate — Ctrl + D" [disabled] [ref=e21]:
+                - img [ref=e22]
+              - button "Actions" [ref=e23] [cursor=pointer]:
+                - img [ref=e24]
+      - generic [ref=e25]:
+        - generic [ref=e26]:
+          - toolbar "Color" [ref=e27]:
+            - radiogroup [ref=e28]:
+              - radio "Color — Black (selected)" [checked] [ref=e29] [cursor=pointer]:
+                - img [ref=e30]
+              - radio "Color — Grey" [ref=e31] [cursor=pointer]:
+                - img [ref=e32]
+              - radio "Color — Light violet" [ref=e33] [cursor=pointer]:
+                - img [ref=e34]
+              - radio "Color — Violet" [ref=e35] [cursor=pointer]:
+                - img [ref=e36]
+              - radio "Color — Blue" [ref=e37] [cursor=pointer]:
+                - img [ref=e38]
+              - radio "Color — Light blue" [ref=e39] [cursor=pointer]:
+                - img [ref=e40]
+              - radio "Color — Yellow" [ref=e41] [cursor=pointer]:
+                - img [ref=e42]
+              - radio "Color — Orange" [ref=e43] [cursor=pointer]:
+                - img [ref=e44]
+              - radio "Color — Green" [ref=e45] [cursor=pointer]:
+                - img [ref=e46]
+              - radio "Color — Light green" [ref=e47] [cursor=pointer]:
+                - img [ref=e48]
+              - radio "Color — Light red" [ref=e49] [cursor=pointer]:
+                - img [ref=e50]
+              - radio "Color — Red" [ref=e51] [cursor=pointer]:
+                - img [ref=e52]
+          - slider "Opacity — 100%" [ref=e58]
+        - generic [ref=e59]:
+          - toolbar "Fill" [ref=e60]:
+            - radiogroup [ref=e61]:
+              - radio "Fill — None (selected)" [checked] [ref=e62] [cursor=pointer]:
+                - img [ref=e63]
+              - radio "Fill — Semi" [ref=e64] [cursor=pointer]:
+                - img [ref=e65]
+              - radio "Fill — Solid" [ref=e66] [cursor=pointer]:
+                - img [ref=e67]
+              - radio "Fill — Pattern" [ref=e68] [cursor=pointer]:
+                - img [ref=e69]
+          - toolbar "Dash" [ref=e70]:
+            - radiogroup [ref=e71]:
+              - radio "Dash — Draw (selected)" [checked] [ref=e72] [cursor=pointer]:
+                - img [ref=e73]
+              - radio "Dash — Dashed" [ref=e74] [cursor=pointer]:
+                - img [ref=e75]
+              - radio "Dash — Dotted" [ref=e76] [cursor=pointer]:
+                - img [ref=e77]
+              - radio "Dash — Solid" [ref=e78] [cursor=pointer]:
+                - img [ref=e79]
+          - toolbar "Size" [ref=e80]:
+            - radiogroup [ref=e81]:
+              - radio "Size — Small" [ref=e82] [cursor=pointer]:
+                - img [ref=e83]
+              - radio "Size — Medium (selected)" [checked] [ref=e84] [cursor=pointer]:
+                - img [ref=e85]
+              - radio "Size — Large" [ref=e86] [cursor=pointer]:
+                - img [ref=e87]
+              - radio "Size — Extra large" [ref=e88] [cursor=pointer]:
+                - img [ref=e89]
+    - generic:
+      - generic:
+        - toolbar "Navigation" [ref=e91]:
+          - button "Zoom — 100%" [ref=e92] [cursor=pointer]:
+            - generic [ref=e93]: 100%
+          - button "Toggle minimap" [ref=e94] [cursor=pointer]:
+            - img [ref=e95]
+        - toolbar "Tools" [ref=e96]:
+          - generic [ref=e97]:
+            - button "Select — V" [pressed] [ref=e98] [cursor=pointer]:
+              - img [ref=e99]
+            - button "Hand — H" [ref=e100] [cursor=pointer]:
+              - img [ref=e101]
+            - button "Draw — D" [ref=e102] [cursor=pointer]:
+              - img [ref=e103]
+            - button "Eraser — E" [ref=e104] [cursor=pointer]:
+              - img [ref=e105]
+            - button "Arrow — A" [ref=e106] [cursor=pointer]:
+              - img [ref=e107]
+            - button "Text — T" [ref=e108] [cursor=pointer]:
+              - img [ref=e109]
+            - button "Note — N" [ref=e110] [cursor=pointer]:
+              - img [ref=e111]
+            - button "Media — Ctrl + U" [ref=e112] [cursor=pointer]:
+              - img [ref=e113]
+            - button "Rectangle — R" [ref=e114] [cursor=pointer]:
+              - img [ref=e115]
+          - button "More" [ref=e117] [cursor=pointer]:
+            - img [ref=e118]
+    - region "Notifications (F8)":
+      - list
+  - button "Get a license for production" [ref=e120] [cursor=pointer]
+```

@@ -1,4 +1,4 @@
-[ ] 1. Scaffold SPA com React + tldraw e persistência local
+[x] 1. Scaffold SPA com React + tldraw e persistência local
 - Complexidade: low
 - Risco: low
 - Passo 1: Criar projeto (Vite/CRA) com TypeScript
