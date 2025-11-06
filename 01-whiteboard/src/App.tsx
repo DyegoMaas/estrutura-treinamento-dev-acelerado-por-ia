@@ -1,5 +1,6 @@
 import { Tldraw, type TLUiOverrides, useEditor, useTools } from '@tldraw/tldraw'
 import '@tldraw/tldraw/tldraw.css'
+import './polish.css'
 import { useEffect } from 'react'
 import { CardShapeUtil } from './shapes/CardShapeUtil'
 import { CardTool } from './tools/CardTool'
@@ -21,7 +22,7 @@ function isInputFocused(): boolean {
   return isInput || isContentEditable
 }
 
-// Component to handle keyboard shortcuts (RF-2, RF-14)
+// Component to handle keyboard shortcuts (RF-2, RF-14, RF-13)
 function KeyboardShortcuts() {
   const editor = useEditor()
 
@@ -29,6 +30,19 @@ function KeyboardShortcuts() {
     const handleKeyDown = (e: KeyboardEvent) => {
       // Ignore if input is focused (RF-14)
       if (isInputFocused()) {
+        return
+      }
+
+      // Undo/Redo shortcuts (RF-13)
+      if ((e.ctrlKey || e.metaKey) && e.key === 'z' && !e.shiftKey) {
+        e.preventDefault()
+        editor.undo()
+        return
+      }
+
+      if ((e.ctrlKey || e.metaKey) && (e.key === 'y' || (e.key === 'z' && e.shiftKey))) {
+        e.preventDefault()
+        editor.redo()
         return
       }
 

@@ -1,0 +1,140 @@
+/**
+ * Polish and usability improvements CSS
+ * RF-3, RF-12, RF-13, RF-15, RNF-Desempenho
+ */
+
+/* Smooth transitions for pan/zoom interactions */
+.tl-container {
+  transition: transform 0.1s ease-out;
+  will-change: transform;
+}
+
+/* Cursor improvements for different tools */
+.tl-container[data-tool="select"] {
+  cursor: default;
+}
+
+.tl-container[data-tool="draw"] {
+  cursor: crosshair;
+}
+
+.tl-container[data-tool="arrow"] {
+  cursor: crosshair;
+}
+
+.tl-container[data-tool="card"] {
+  cursor: crosshair;
+}
+
+.tl-container[data-tool="hand"] {
+  cursor: grab;
+}
+
+.tl-container[data-tool="hand"]:active {
+  cursor: grabbing;
+}
+
+/* Shadow effects when dragging shapes */
+.tl-shape[data-is-dragging="true"],
+.tl-shape.tl-dragging {
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.15));
+  transition: filter 0.1s ease-out;
+}
+
+/* Smooth selection feedback */
+.tl-shape[data-is-selected="true"] {
+  transition: box-shadow 0.15s ease-out;
+}
+
+/* Multi-selection visual feedback */
+.tl-selection-container {
+  transition: opacity 0.15s ease-out;
+}
+
+/* Smooth cursor changes */
+.tlui-button {
+  transition: background-color 0.15s ease-out, transform 0.1s ease-out;
+}
+
+.tlui-button:hover {
+  transform: translateY(-1px);
+}
+
+.tlui-button:active {
+  transform: translateY(0);
+}
+
+/* Smooth tool switching */
+.tlui-button__tool--selected {
+  transition: background-color 0.2s ease-out;
+}
+
+/* Improved drag feedback */
+.tl-bound {
+  transition: outline-color 0.1s ease-out;
+}
+
+/* Smooth zoom transitions */
+.tl-viewport {
+  transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Prevent layout shifts during interactions */
+.tl-shape,
+.tl-shape-indicator {
+  will-change: transform;
+}
+
+/* Improved scrollbar styling */
+.tl-container ::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.tl-container ::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.tl-container ::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+}
+
+.tl-container ::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+/* Dark mode scrollbar */
+[data-theme="dark"] .tl-container ::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+[data-theme="dark"] .tl-container ::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* Smooth text editing */
+.tl-text-editor {
+  transition: opacity 0.15s ease-out;
+}
+
+/* Improved selection handles */
+.tl-resize-handle {
+  transition: background-color 0.1s ease-out;
+}
+
+.tl-resize-handle:hover {
+  background-color: var(--color-selected, #3b82f6);
+}
+
+/* Smooth grid/grid fade */
+.tl-grid {
+  transition: opacity 0.2s ease-out;
+}
+
+/* Performance optimizations */
+.tl-container * {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+

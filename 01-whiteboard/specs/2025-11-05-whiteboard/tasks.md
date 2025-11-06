@@ -71,7 +71,7 @@
   - Toggle troca tema imediatamente e persiste após reload
 - _Requirements: RF-10_
 
-[ ] 8. Polimento e usabilidade
+[x] 8. Polimento e usabilidade
 - Complexidade: low
 - Risco: low
 - Passo 1: Ajustar cursores, sombras ao arrastar, suavização
