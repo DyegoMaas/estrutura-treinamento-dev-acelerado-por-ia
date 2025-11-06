@@ -62,7 +62,7 @@
   - Nenhum arquivo é baixado
 - _Requirements: RF-9_
 
-[ ] 7. Tema claro/escuro
+[x] 7. Tema claro/escuro
 - Complexidade: low
 - Risco: low
 - Passo 1: Alternância via CSS vars e integração com tema do tldraw

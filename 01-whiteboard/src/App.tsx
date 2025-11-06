@@ -7,6 +7,8 @@ import { Minimap } from './components/Minimap'
 import { MinimapToggle } from './components/MinimapToggle'
 import { useMinimapState } from './components/useMinimapState'
 import { ExportToggle } from './components/ExportToggle'
+import { ThemeToggle } from './components/ThemeToggle'
+import { useThemeState } from './components/useThemeState'
 
 // Helper function to check if an input/textarea is focused (RF-14)
 function isInputFocused(): boolean {
@@ -139,6 +141,9 @@ function MinimapContainer() {
 }
 
 function App() {
+  // Initialize theme state to apply theme on mount
+  useThemeState()
+
   return (
     <div style={{ position: 'fixed', inset: 0 }}>
       <Tldraw
@@ -151,6 +156,7 @@ function App() {
         <CardToolbarInjection />
         <MinimapContainer />
         <ExportToggle />
+        <ThemeToggle />
       </Tldraw>
     </div>
   )
