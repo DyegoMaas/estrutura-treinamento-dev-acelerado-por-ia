@@ -9,7 +9,7 @@
   - Reload preserva o board
 - _Requirements: RF-1, RF-11, RNF-Confiabilidade_
 
-[ ] 2. Registrar shape custom `Card`
+[x] 2. Registrar shape custom `Card`
 - Complexidade: medium
 - Risco: medium
 - Passo 1: Implementar `CardShapeUtil` (title/label, resize, estilos básicos)

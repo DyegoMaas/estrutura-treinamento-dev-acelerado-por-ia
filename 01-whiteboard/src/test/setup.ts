@@ -4,7 +4,9 @@ import { afterEach, vi } from 'vitest'
 import 'fake-indexeddb/auto'
 
 // Mock window.alert for tldraw compatibility
-global.alert = vi.fn(() => {})
+if (typeof globalThis.alert === 'undefined') {
+  globalThis.alert = vi.fn(() => {})
+}
 
 afterEach(() => {
   cleanup()
