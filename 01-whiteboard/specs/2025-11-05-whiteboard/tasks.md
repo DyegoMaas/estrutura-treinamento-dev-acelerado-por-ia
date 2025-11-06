@@ -20,7 +20,7 @@
   - Export SVG do Card respeita aparência básica
 - _Requirements: RF-5, RF-9_
 
-[ ] 3. Toolbelt minimalista e hotkeys
+[x] 3. Toolbelt minimalista e hotkeys
 - Complexidade: low
 - Risco: low
 - Passo 1: Restringir UI a Select/Draw/Arrow/Card
