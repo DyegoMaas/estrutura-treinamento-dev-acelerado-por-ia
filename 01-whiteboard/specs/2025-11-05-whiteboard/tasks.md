@@ -40,14 +40,14 @@
   - Laser aparece como rastro temporário
 - _Requirements: RF-8_
 
-[ ] 5. Minimap (flag)
+[ ] 5. Minimap
 - Complexidade: medium
 - Risco: medium
-- Passo 1: Adicionar toggle `feature.minimap`
+- Passo 1: Adicionar toggle no UI para mostrar/ocultar minimap
 - Passo 2: Integrar minimap nativo (se estável) OU fallback overlay simples
-- Passo 3: Ocultar por padrão se instável
+- Passo 3: Validar estabilidade em pan/zoom e ajustar thresholds
 - Critérios de Aceite:
-  - Minimap pode ser ligado/desligado
+  - Minimap pode ser ligado/desligado pelo usuário
   - Sem travamentos ao pan/zoom
 - _Requirements: RF-7, RNF-Observabilidade_
 
@@ -87,5 +87,5 @@
 - Passo 2: Testar persistência com boards grandes (~5k elementos fake)
 - Passo 3: Validar fallback do minimap
 - Critérios de Aceite:
-  - Nenhum bloqueador; performance aceitável; flags funcionando
+  - Nenhum bloqueador; performance aceitável; toggle do minimap funcionando
 - _Requirements: RNF-Desempenho, RNF-Confiabilidade, RNF-Observabilidade_

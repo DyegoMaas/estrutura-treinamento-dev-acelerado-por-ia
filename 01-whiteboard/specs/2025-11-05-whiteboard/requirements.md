@@ -25,7 +25,7 @@
 ## 3. Requisitos Não‑Funcionais
 - Desempenho: Renderização fluida (objetivo 60 FPS) com até ~5.000 elementos locais; interações responsivas (<100 ms percebido) na maioria das ações.
 - Segurança/Privacidade: Dados permanecem no dispositivo do usuário; sem tracking; sem envio a servidores.
-- Observabilidade: Logs de debug no console (dev); flag de recursos (ex.: `feature.minimap`) para habilitar/desabilitar UI instável.
+- Observabilidade: Logs de debug no console (dev); toggles de UI (ex.: habilitar/desabilitar minimap) e métricas básicas de performance (dev).
 - Confiabilidade/Disponibilidade: Persistência local resiliente a reload; comportamento previsível sem internet; recuperação básica em caso de estado inválido (reset do board).
 - Portabilidade: Desktop‑first (Chrome/Edge); funcionamento básico em touch não é objetivo do MVP.
 

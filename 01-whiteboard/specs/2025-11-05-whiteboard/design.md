@@ -2,7 +2,7 @@
 
 ## Contexto e Decisão
 - Stack: React + `tldraw` (v2.x) como SDK de canvas infinito, sem backend.
-- Forma: SPA com serviços internos (PersistenceService, HotkeysManager, ExportService/UI, ShapeRegistry) e feature flags (ex.: `feature.minimap`).
+- Forma: SPA com serviços internos (PersistenceService, HotkeysManager, ExportService/UI, ShapeRegistry); minimap sempre disponível com toggle no UI (sem feature flag).
 - Decisão: tldraw como engine pela extensibilidade (custom shapes, UI override, estado), velocidade de entrega e caminho futuro para colaboração.
 
 ## Alternativas comparadas
@@ -16,7 +16,7 @@
 flowchart LR
   user([Usuário]) -->|Interage| app[(Whiteboard SPA - React + tldraw)]
   app -->|Persistência local| storage[(LocalStorage/IndexedDB)]
-  app -->|Export (simulado)| export[[Export UI]]
+  app -->|Export simulado| export(Export UI)
 ```
 
 ## C4: Containers (Mermaid)
@@ -33,7 +33,7 @@ flowchart TB
     Services --> Hotkeys[HotkeysManager]
     Services --> ExportSvc[Export Service/UI]
     Services --> Theme[Theme Provider]
-    Services --> Minimap[Minimap (flag)]
+    Services --> Minimap[Minimap]
   end
   WebApp --> Storage[(LocalStorage/IndexedDB)]
 ```
@@ -47,9 +47,9 @@ flowchart LR
   AppShell --> HotkeysManager
   AppShell --> ExportModal
   EditorWrapper --> CardShapeUtil[CardShapeUtil]
-  EditorWrapper --> ToolbeltUI[Toolbelt (Select/Draw/Arrow/Card)]
+  EditorWrapper --> ToolbeltUI[Toolbelt Select/Draw/Arrow/Card]
   EditorWrapper --> Laser[Laser Pointer]
-  EditorWrapper --> MinimapUI[Minimap (flag)]
+  EditorWrapper --> MinimapUI[Minimap]
   AppShell --> PersistenceService
   PersistenceService --> LocalStorage
 ```
@@ -89,6 +89,6 @@ sequenceDiagram
 ## Notas de Implementação
 - Shape `Card`: util com `getDefaultProps`, `getGeometry`, `component`, `indicator` e `toSvg()/toBackgroundSvg()` para export visual consistente.
 - Toolbelt mínima: esconder ferramentas não usadas; hotkeys 1/2/3/N mapeando `select/draw/arrow/card`.
-- Minimap: gated por flag; se instável, ocultar por padrão e/ou fallback para overlay simples com viewport.
+- Minimap: sempre disponível; toggle no UI; se necessário, fallback para overlay simples com viewport.
 - Export (simulado): usar `editor.getSvg()`/`editor.store.getSnapshot()` e desabilitar PNG real no MVP.
 - Tema: alternância via CSS vars e suporte do tema do `tldraw`.

@@ -5,11 +5,11 @@
 - Opções consideradas: tldraw (A), Excalidraw (B), Konva.js (C)
 - Decisão: A (tldraw) — velocidade + extensibilidade; caminho claro para futuro multiplayer.
 - Riscos e mitigação:
-  - Minimap potencialmente instável → feature flag (`feature.minimap`), ocultar por padrão, fallback overlay.
+  - Minimap potencialmente instável → sem feature flag; sempre disponível com toggle no UI; se instável, fallback overlay.
   - Export PNG não nativo no MVP → simular (SVG/JSON), planejar PNG real com canvas/html-to-image futuramente.
   - Conflitos de atalhos → rebinding e ignorar quando foco em inputs.
   - Touch/mobile → desktop‑first; toolbar flutuante opcional no futuro.
-- Revisão Zen/Consensus: Majority‑weighted entre Gemini, o3 e Claude confirmando tldraw; consenso em flag para minimap, export simulado e serviços finos (Persistence/Hotkeys/Export/ShapeRegistry). Confiança ~8.5/10.
+- Revisão Zen/Consensus: Majority‑weighted entre Gemini, o3 e Claude confirmando tldraw; consenso sugeriu flag para minimap; decisão do usuário: sem feature flag (minimap sempre disponível com toggle de UI). Export simulado e serviços finos (Persistence/Hotkeys/Export/ShapeRegistry) mantidos. Confiança ~9.2/10.
 - Gate aplicado: Gate 0 (Discovery) concluído; seguir para Requisitos/Contexto/Arquitetura.
 - Próximos passos: Finalizar `requirements.md`, `design.md` (C4 + Sequências), `tasks.md` com rastreabilidade; manter flags.
 
@@ -43,8 +43,9 @@
 - Confidence: 0.90 (aguarda validação 0‑A para Go/No‑Go)
 
 ### Gate 5 — Go/No‑Go
-- Condição: Confirmação do usuário sobre suposições (export simulado, minimap flag, desktop‑first).
-- Status: Em espera; após confirmação, marcar “ready to build”.
+- Condição: Confirmação recebida (export simulado, minimap sem feature flag, desktop‑first).
+- Decisão: Go (ready to build).
+- Confidence final: 0.92
 
 ---
 
@@ -77,3 +78,8 @@
 - Confidence: 0.90
 - Artefatos: `tasks.md`
 - Lacunas: aguarda confirmação do usuário para Gate 5
+
+## Outputs da Fase 5
+- Go/No‑Go: Go (ready to build)
+- Confidence final: 0.92
+- Artefatos atualizados: `requirements.md`, `design.md`, `tasks.md` refletem minimap sem feature flag
