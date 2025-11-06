@@ -80,7 +80,7 @@
   - Interações fluem sem engasgos, undo/redo previsível
 - _Requirements: RF-3, RF-12, RF-13, RF-15, RNF-Desempenho_
 
-[ ] 9. QA e hardening
+[x] 9. QA e hardening
 - Complexidade: low
 - Risco: medium
 - Passo 1: Testar atalhos vs inputs focados
